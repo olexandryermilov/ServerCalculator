@@ -10,11 +10,13 @@ import java.net.SocketException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.Stack;
+
 import Logger.Logger;
 
 public class Main {
 
-    private static int countActions=0;
+    private static int countActions=0,countOperands;
     private static BigDecimal minNum=null,maxNum=null,sum=BigDecimal.ZERO;
     private static final int PORT_NUMBER=1034;
     private static final String AUTHOR_INFORMATION="Author: Olexandr Yermilov Group: K-24 Variant: 9 - calculator";
@@ -96,6 +98,52 @@ public class Main {
             }
         }
     }
+    private static String parse(String rpnString){
+        String[] s = rpnString.split(" ");
+        if(s.length<3)return "4Wrong expression: should be {+,-,*,/} operand operand";
+        Stack<BigDecimal> st = new Stack<>();
+        for(int i=0;i<s.length;i++)
+        {
+            if(s[i].equals("NaN"))
+            {
+                throw new ArithmeticException();
+            }
+            BigDecimal num = getNumber(s[i]);
+            if(num!=null)
+            {
+                st.push(num);
+                updateMinMaxSum(num,num);
+                countOperands++;
+            }
+            else
+            {
+                Character op = getArithmeticOperation(s[i]);
+                if(op!=null)
+                {
+                    if(st.size()<2)return "3Wrong expression: should be {+,-,*,/} operand operand";
+                    BigDecimal a=st.pop();
+                    BigDecimal b=st.pop();
+                    if(a.equals(BigDecimal.ZERO)&&op=='/')return "Error: Division by zero";
+                    switch (op)
+                    {
+                        case '+':st.push(b.add(a));break;
+                        case '-':st.push(b.subtract(a));break;
+                        case '*':st.push(b.multiply(a));break;
+                        case '/':st.push(b.divide(a,10, RoundingMode.UP));break;
+                    }
+                }
+                else
+                {
+                    return "2Wrong expression: should be {+,-,*,/} operand operand";
+                }
+            }
+        }
+        if(st.size()!=1)return "1Wrong expression: should be {+,-,*,/} operand operand";
+        countActions++;
+        BigDecimal res=st.pop();
+        return res.toString();
+
+    }
     private static Logger logger = new Logger();
     public static void main(String[] args) {
         try{
@@ -116,8 +164,8 @@ public class Main {
                     out.println("During connection "+countActions+" times calculated result");
                     logger.logMessage("During connection "+countActions+" times calculated result");
                     if(countActions!=0){
-                        out.println("Min is " + minNum+ ", max is "+maxNum+", average is "+sum.divide(new BigDecimal(2*countActions),10,BigDecimal.ROUND_UP));
-                        logger.logMessage("Min is " + minNum+ ", max is "+maxNum+", average is "+sum.divide(new BigDecimal(2*countActions),10,BigDecimal.ROUND_UP));
+                        out.println("Min is " + minNum+ ", max is "+maxNum+", average is "+sum.divide(new BigDecimal(2*countOperands),10,BigDecimal.ROUND_UP));
+                        logger.logMessage("Min is " + minNum+ ", max is "+maxNum+", average is "+sum.divide(new BigDecimal(2*countOperands),10,BigDecimal.ROUND_UP));
                     }
                     out.println("Disconnecting");
                     logger.logMessage("Disconnecting");
@@ -129,7 +177,7 @@ public class Main {
                         out.println(AUTHOR_INFORMATION);
                         logger.logMessage("Sent message: " + AUTHOR_INFORMATION);
                     } else {
-                        outputLine = calculateExpression(inputLine);
+                        outputLine = parse(inputLine);
                         out.println(outputLine);
                         logger.logMessage("Tried to calculate expression: " + inputLine + ", result is: " + outputLine);
                     }
