@@ -1,0 +1,6 @@
+29/10/2017 11:44:13 Server started. Listens on port 1034
+29/10/2017 11:44:17 Client connected on 1034.
+29/10/2017 11:44:17 Received message: Successfully connected from Socket[addr=/127.0.0.1,port=52551,localport=1034]
+29/10/2017 11:44:17 Tried to calculate expression: Successfully connected, result is: Wrong expression: should be {+,-,*,/} number number
+29/10/2017 11:45:00 Connection reset
+29/10/2017 11:45:00 Shutting down server

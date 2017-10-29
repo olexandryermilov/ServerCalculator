@@ -1,0 +1,6 @@
+29/10/2017 11:45:06 Server started. Listens on port 1034
+29/10/2017 11:45:15 Client connected on 1034.
+29/10/2017 11:45:26 Received message: who from Socket[addr=/127.0.0.1,port=52602,localport=1034]
+29/10/2017 11:45:26 Sent message: Author: Olexandr Yermilov Group: K-24 Variant: 9 - calculator
+29/10/2017 11:45:41 Connection reset
+29/10/2017 11:45:41 Shutting down server

@@ -1,0 +1,4 @@
+29/10/2017 11:42:20 Server started. Listens on port 1034
+29/10/2017 11:42:22 Client connected on 1034.
+29/10/2017 11:43:35 Connection reset
+29/10/2017 11:43:35 Shutting down server
