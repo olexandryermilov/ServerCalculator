@@ -100,7 +100,8 @@ public class Main {
     }
     private static String parse(String rpnString){
         String[] s = rpnString.split(" ");
-        if(s.length<3)return "4Wrong expression: should be {+,-,*,/} operand operand";
+        //if(s.length==3)return calculateExpression(rpnString);
+        if(s.length<3)return "Wrong expression: should be  operand operand {+,-,*,/}";
         Stack<BigDecimal> st = new Stack<>();
         for(int i=0;i<s.length;i++)
         {
@@ -120,7 +121,7 @@ public class Main {
                 Character op = getArithmeticOperation(s[i]);
                 if(op!=null)
                 {
-                    if(st.size()<2)return "3Wrong expression: should be {+,-,*,/} operand operand";
+                    if(st.size()<2)return "Wrong expression: should be operand operand {+,-,*,/} ";
                     BigDecimal a=st.pop();
                     BigDecimal b=st.pop();
                     if(a.equals(BigDecimal.ZERO)&&op=='/')return "Error: Division by zero";
@@ -134,11 +135,11 @@ public class Main {
                 }
                 else
                 {
-                    return "2Wrong expression: should be {+,-,*,/} operand operand";
+                    return "2Wrong expression: should be  operand operand {+,-,*,/}";
                 }
             }
         }
-        if(st.size()!=1)return "1Wrong expression: should be {+,-,*,/} operand operand";
+        if(st.size()!=1)return "1Wrong expression: should be  operand operand {+,-,*,/}";
         countActions++;
         BigDecimal res=st.pop();
         return res.toString();
