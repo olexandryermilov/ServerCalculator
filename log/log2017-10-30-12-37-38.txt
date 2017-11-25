@@ -1,0 +1,12 @@
+30/10/2017 12:37:39 Server started. Listens on port 1034
+30/10/2017 12:37:57 Client connected on 1034.
+30/10/2017 12:38:31 Received message: who from Socket[addr=/127.0.0.1,port=56547,localport=1034]
+30/10/2017 12:38:31 Sent message: Author: Olexandr Yermilov Group: K-24 Variant: 9 - calculator
+30/10/2017 12:38:40 Received message: 1 3 / from Socket[addr=/127.0.0.1,port=56547,localport=1034]
+30/10/2017 12:38:40 Tried to calculate expression: 1 3 /, result is: 0.3333333334
+30/10/2017 12:38:58 Received message: 15 7 1 1 +  / 3 * 2 1 1 + +  from Socket[addr=/127.0.0.1,port=56547,localport=1034]
+30/10/2017 12:38:58 Tried to calculate expression: 15 7 1 1 +  / 3 * 2 1 1 + + , result is: 2Wrong expression: should be  operand operand {+,-,*,/}
+30/10/2017 12:39:14 Received message: 15 7 1 1 + - / 3 * 2 1 1 + + - from Socket[addr=/127.0.0.1,port=56547,localport=1034]
+30/10/2017 12:39:14 Tried to calculate expression: 15 7 1 1 + - / 3 * 2 1 1 + + -, result is: 5.0000000000
+30/10/2017 12:39:21 Received message: / 3 1 from Socket[addr=/127.0.0.1,port=56547,localport=1034]
+30/10/2017 12:39:21 Tried to calculate expression: / 3 1, result is: Wrong expression: should be operand operand {+,-,*,/} 

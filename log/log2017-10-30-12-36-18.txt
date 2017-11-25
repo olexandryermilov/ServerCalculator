@@ -1,0 +1,4 @@
+30/10/2017 12:36:19 Server started. Listens on port 1034
+30/10/2017 12:36:24 Client connected on 1034.
+30/10/2017 12:36:27 Received message: / 3 1 from Socket[addr=/127.0.0.1,port=55965,localport=1034]
+30/10/2017 12:36:27 Tried to calculate expression: / 3 1, result is: 3Wrong expression: should be {+,-,*,/} operand operand

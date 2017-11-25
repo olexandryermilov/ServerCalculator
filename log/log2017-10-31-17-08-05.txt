@@ -1,0 +1,15 @@
+31/10/2017 17:08:06 Server started. Listens on port 1034
+31/10/2017 17:11:35 Client connected on 1034.
+31/10/2017 17:11:51 Received message: who from Socket[addr=/127.0.0.1,port=52775,localport=1034]
+31/10/2017 17:11:51 Sent message: Author: Olexandr Yermilov Group: K-24 Variant: 9 - calculator
+31/10/2017 17:11:57 Received message: 1034 17 / from Socket[addr=/127.0.0.1,port=52775,localport=1034]
+31/10/2017 17:11:58 Tried to calculate expression: 1034 17 /, result is: 60.8235294118
+31/10/2017 17:12:05 Received message: 18 0 / from Socket[addr=/127.0.0.1,port=52775,localport=1034]
+31/10/2017 17:12:05 Tried to calculate expression: 18 0 /, result is: Error: Division by zero
+31/10/2017 17:12:14 Received message: 1027432423 1342354534543 * from Socket[addr=/127.0.0.1,port=52775,localport=1034]
+31/10/2017 17:12:14 Tried to calculate expression: 1027432423 1342354534543 *, result is: 1379178571950551687689
+31/10/2017 17:12:20 Received message: exit from Socket[addr=/127.0.0.1,port=52775,localport=1034]
+31/10/2017 17:12:20 During connection 2 times calculated result
+31/10/2017 17:12:20 Min is 0, max is 1342354534543, average is 223896994672.5000000000
+31/10/2017 17:12:20 Disconnecting
+31/10/2017 17:12:20 Shutting down server

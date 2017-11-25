@@ -1,0 +1,6 @@
+30/10/2017 12:34:12 Server started. Listens on port 1034
+30/10/2017 12:34:22 Client connected on 1034.
+30/10/2017 12:34:28 Received message: who from Socket[addr=/127.0.0.1,port=55757,localport=1034]
+30/10/2017 12:34:28 Sent message: Author: Olexandr Yermilov Group: K-24 Variant: 9 - calculator
+30/10/2017 12:34:30 Received message: / 3 1 from Socket[addr=/127.0.0.1,port=55757,localport=1034]
+30/10/2017 12:34:30 Tried to calculate expression: / 3 1, result is: 3.0000000000
