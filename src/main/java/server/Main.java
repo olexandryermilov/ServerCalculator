@@ -52,7 +52,7 @@ public class Main {
                         out.println(AUTHOR_INFORMATION);
                         logger.logMessage("Sent message: " + AUTHOR_INFORMATION);
                     } else {
-                        outputLine = calculator.parse(inputLine);
+                        outputLine = calculator.calculate(inputLine);
                         out.println(outputLine);
                         logger.logMessage("Tried to calculate expression: " + inputLine + ", result is: " + outputLine);
                     }
