@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="uk"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Logger.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ServerCalculator</a> &gt; <a href="index.source.html" class="el_package">logger</a> &gt; <span class="el_source">Logger.java</span></div><h1>Logger.java</h1><pre class="source lang-java linenums">package logger;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+public class Logger {
+<span class="nc" id="L11">    public Logger(){</span>
+        try {
+<span class="nc" id="L13">            logOutputFile = new File(logOutput + getDateAsString() + &quot;.txt&quot;);</span>
+<span class="nc bnc" id="L14" title="All 2 branches missed.">            if (!logOutputFile.exists()) logOutputFile.createNewFile();</span>
+<span class="nc" id="L15">            logOutputStream = new FileOutputStream(logOutputFile);</span>
+<span class="nc" id="L16">        } catch (FileNotFoundException e) {</span>
+<span class="nc" id="L17">            e.printStackTrace();</span>
+<span class="nc" id="L18">        } catch (IOException e) {</span>
+<span class="nc" id="L19">            e.printStackTrace();</span>
+<span class="nc" id="L20">        }</span>
+
+<span class="nc" id="L22">    }</span>
+    private String getDateAsString(){
+<span class="nc" id="L24">        LocalDateTime now = LocalDateTime.now();</span>
+<span class="nc" id="L25">        DateTimeFormatter formatter=DateTimeFormatter.ofPattern(&quot;yyyy-MM-dd-HH-mm-ss&quot;);</span>
+<span class="nc" id="L26">        return now.format(formatter);</span>
+    }
+    private String getDateAsLog(){
+<span class="nc" id="L29">        LocalDateTime now = LocalDateTime.now();</span>
+<span class="nc" id="L30">        DateTimeFormatter formatter=DateTimeFormatter.ofPattern(&quot;dd/MM/yyyy HH:mm:ss&quot;);</span>
+<span class="nc" id="L31">        return now.format(formatter);</span>
+    }
+    public void logMessage(String message){
+<span class="nc" id="L34">        String time = getDateAsLog();</span>
+<span class="nc" id="L35">        message=time + &quot; &quot; + message;</span>
+<span class="nc bnc" id="L36" title="All 2 branches missed.">        for(int i=0;i&lt;message.length();i++){</span>
+            try {
+<span class="nc" id="L38">                logOutputStream.write((byte)message.charAt(i));</span>
+<span class="nc bnc" id="L39" title="All 2 branches missed.">                if(i==message.length()-1)logOutputStream.write((byte)'\n');</span>
+<span class="nc" id="L40">            } catch (IOException e) {</span>
+<span class="nc" id="L41">                e.printStackTrace();</span>
+<span class="nc" id="L42">            }</span>
+        }
+<span class="nc" id="L44">        System.out.println(message);</span>
+<span class="nc" id="L45">    }</span>
+<span class="nc" id="L46">    private  final String logOutput = &quot;log\\log&quot;;</span>
+    private  File logOutputFile;
+    private  FileOutputStream logOutputStream;
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="uk"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Calculator.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ServerCalculator</a> &gt; <a href="index.source.html" class="el_package">server</a> &gt; <span class="el_source">Calculator.java</span></div><h1>Calculator.java</h1><pre class="source lang-java linenums">package server;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Stack;
+
+public class Calculator {
+    private int countActions,countOperands;
+    private BigDecimal minNum,maxNum,sum;
+<span class="fc" id="L13">    public Calculator(){</span>
+<span class="fc" id="L14">        countActions=0;</span>
+<span class="fc" id="L15">        countOperands=0;</span>
+<span class="fc" id="L16">        minNum=null;</span>
+<span class="fc" id="L17">        maxNum=null;</span>
+<span class="fc" id="L18">        sum=BigDecimal.ZERO;</span>
+<span class="fc" id="L19">    }</span>
+
+    public int getCountOperands() {
+<span class="nc" id="L22">        return countOperands;</span>
+    }
+
+    public int getCountActions() {
+<span class="nc" id="L26">        return countActions;</span>
+    }
+
+    public BigDecimal getMinNum() {
+<span class="nc" id="L30">        return minNum;</span>
+    }
+
+    public BigDecimal getMaxNum() {
+<span class="nc" id="L34">        return maxNum;</span>
+    }
+
+    public BigDecimal getSum() {
+<span class="nc" id="L38">        return sum;</span>
+    }
+
+    private BigDecimal getMinBigDecimal(BigDecimal a, BigDecimal b){
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        if(a.compareTo(b)==-1)return a;</span>
+<span class="fc" id="L43">        return b;</span>
+    }
+    private static BigDecimal getMaxBigDecimal(BigDecimal a, BigDecimal b){
+<span class="fc bfc" id="L46" title="All 2 branches covered.">        if(a.compareTo(b)==-1)return b;</span>
+<span class="fc" id="L47">        return a;</span>
+    }
+
+    private static Character getArithmeticOperation(String argument){
+<span class="fc bfc" id="L51" title="All 2 branches covered.">        if(argument.equals(&quot;/&quot;))return '/';</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">        if(argument.equals(&quot;*&quot;))return '*';</span>
+<span class="fc bfc" id="L53" title="All 2 branches covered.">        if(argument.equals(&quot;-&quot;))return '-';</span>
+<span class="pc bpc" id="L54" title="1 of 2 branches missed.">        if(argument.equals(&quot;+&quot;))return '+';</span>
+<span class="nc" id="L55">        return null;</span>
+    }
+    private BigDecimal getNumber(String argument){
+        try{
+<span class="fc" id="L59">            BigDecimal num = new BigDecimal(argument);</span>
+<span class="fc" id="L60">            return num;</span>
+<span class="fc" id="L61">        }catch (RuntimeException e){</span>
+<span class="fc" id="L62">            return null;</span>
+        }
+    }
+    private void updateMinMaxSum(BigDecimal first, BigDecimal second){
+<span class="fc bfc" id="L66" title="All 2 branches covered.">        if(minNum==null){</span>
+<span class="fc" id="L67">            minNum=getMinBigDecimal(first,second);</span>
+        }
+        else
+        {
+<span class="fc" id="L71">            minNum=getMinBigDecimal(minNum,getMinBigDecimal(first,second));</span>
+        }
+<span class="fc bfc" id="L73" title="All 2 branches covered.">        if(maxNum==null){</span>
+<span class="fc" id="L74">            maxNum=getMaxBigDecimal(first,second);</span>
+        }
+        else
+        {
+<span class="fc" id="L78">            maxNum=getMaxBigDecimal(maxNum,getMaxBigDecimal(first,second));</span>
+        }
+<span class="fc" id="L80">        sum=sum.add(first);</span>
+<span class="fc" id="L81">        sum=sum.add(second);</span>
+<span class="fc" id="L82">    }</span>
+    private static final int LEFT_ASSOC = 0;
+    private static final int RIGHT_ASSOC = 1;
+
+    // Supported operators
+<span class="fc" id="L87">    private static final Map&lt;String, int[]&gt; OPERATORS = new HashMap&lt;String, int[]&gt;();</span>
+    static {
+        // Map&lt;&quot;token&quot;, []{precendence, associativity}&gt;
+<span class="fc" id="L90">        OPERATORS.put(&quot;+&quot;, new int[] { 0, LEFT_ASSOC });</span>
+<span class="fc" id="L91">        OPERATORS.put(&quot;-&quot;, new int[] { 0, LEFT_ASSOC });</span>
+<span class="fc" id="L92">        OPERATORS.put(&quot;*&quot;, new int[] { 5, LEFT_ASSOC });</span>
+<span class="fc" id="L93">        OPERATORS.put(&quot;/&quot;, new int[] { 5, LEFT_ASSOC });</span>
+<span class="fc" id="L94">    }</span>
+
+    private static boolean isOperator(String token) {
+<span class="fc" id="L97">        return OPERATORS.containsKey(token);</span>
+    }
+
+    private static boolean isAssociative(String token, int type) {
+<span class="nc bnc" id="L101" title="All 2 branches missed.">        if (!isOperator(token)) {</span>
+<span class="nc" id="L102">            throw new IllegalArgumentException(&quot;Invalid token: &quot; + token);</span>
+        }
+<span class="nc bnc" id="L104" title="All 2 branches missed.">        if (OPERATORS.get(token)[1] == type) {</span>
+<span class="nc" id="L105">            return true;</span>
+        }
+<span class="nc" id="L107">        return false;</span>
+    }
+    private static final int cmpPrecedence(String token1, String token2) {
+<span class="nc bnc" id="L110" title="All 4 branches missed.">        if (!isOperator(token1) || !isOperator(token2)) {</span>
+<span class="nc" id="L111">            throw new IllegalArgumentException(&quot;Invalied tokens: &quot; + token1</span>
+                    + &quot; &quot; + token2);
+        }
+<span class="nc" id="L114">        return OPERATORS.get(token1)[0] - OPERATORS.get(token2)[0];</span>
+    }
+
+    public static String[] infixToRPN(String exp) {
+<span class="fc" id="L118">        String[] inputTokens=exp.split(&quot; &quot;);</span>
+<span class="fc" id="L119">        ArrayList&lt;String&gt; out = new ArrayList&lt;String&gt;();</span>
+<span class="fc" id="L120">        Stack&lt;String&gt; stack = new Stack&lt;String&gt;();</span>
+<span class="fc bfc" id="L121" title="All 2 branches covered.">        for (String token : inputTokens) {</span>
+<span class="fc bfc" id="L122" title="All 2 branches covered.">            if (isOperator(token)) {</span>
+<span class="pc bpc" id="L123" title="1 of 4 branches missed.">                while (!stack.empty() &amp;&amp; isOperator(stack.peek())) {</span>
+                    // [S4]
+<span class="nc bnc" id="L125" title="All 4 branches missed.">                    if ((isAssociative(token, LEFT_ASSOC) &amp;&amp; cmpPrecedence(</span>
+<span class="nc" id="L126">                            token, stack.peek()) &lt;= 0)</span>
+<span class="nc bnc" id="L127" title="All 4 branches missed.">                            || (isAssociative(token, RIGHT_ASSOC) &amp;&amp; cmpPrecedence(</span>
+<span class="nc" id="L128">                            token, stack.peek()) &lt; 0)) {</span>
+<span class="nc" id="L129">                        out.add(stack.pop());</span>
+<span class="nc" id="L130">                        continue;</span>
+                    }
+                    break;
+                }
+<span class="fc" id="L134">                stack.push(token);</span>
+<span class="fc bfc" id="L135" title="All 2 branches covered.">            } else if (token.equals(&quot;(&quot;)) {</span>
+<span class="fc" id="L136">                stack.push(token);</span>
+<span class="fc bfc" id="L137" title="All 2 branches covered.">            } else if (token.equals(&quot;)&quot;)) {</span>
+<span class="pc bpc" id="L138" title="1 of 4 branches missed.">                while (!stack.empty() &amp;&amp; !stack.peek().equals(&quot;(&quot;)) {</span>
+<span class="fc" id="L139">                    out.add(stack.pop());</span>
+                }
+<span class="fc" id="L141">                stack.pop();</span>
+            } else {
+<span class="fc" id="L143">                out.add(token);</span>
+            }
+        }
+<span class="fc bfc" id="L146" title="All 2 branches covered.">        while (!stack.empty()) {</span>
+<span class="fc" id="L147">            out.add(stack.pop());</span>
+        }
+<span class="fc" id="L149">        String[] output = new String[out.size()];</span>
+<span class="fc" id="L150">        return out.toArray(output);</span>
+    }
+
+    public String calculate(String exp){
+<span class="fc" id="L154">        String[] rpnString = infixToRPN(exp);</span>
+<span class="fc" id="L155">        return calculateRPNString(rpnString);</span>
+    }
+    public String calculateRPNString(String[] rpnString){
+<span class="fc" id="L158">        String[] s = rpnString;</span>
+        //if(s.length==3)return calculateExpression(rpnString);
+<span class="pc bpc" id="L160" title="1 of 2 branches missed.">        if(s.length&lt;3)return &quot;Wrong expression: should be  operand operand {+,-,*,/}&quot;;</span>
+<span class="fc" id="L161">        Stack&lt;BigDecimal&gt; st = new Stack&lt;&gt;();</span>
+<span class="fc bfc" id="L162" title="All 2 branches covered.">        for(int i=0;i&lt;s.length;i++)</span>
+        {
+<span class="pc bpc" id="L164" title="1 of 2 branches missed.">            if(s[i].equals(&quot;NaN&quot;))</span>
+            {
+<span class="nc" id="L166">                throw new ArithmeticException();</span>
+            }
+<span class="fc" id="L168">            BigDecimal num = getNumber(s[i]);</span>
+<span class="fc bfc" id="L169" title="All 2 branches covered.">            if(num!=null)</span>
+            {
+<span class="fc" id="L171">                st.push(num);</span>
+<span class="fc" id="L172">                updateMinMaxSum(num,num);</span>
+<span class="fc" id="L173">                countOperands++;</span>
+            }
+            else
+            {
+<span class="fc" id="L177">                Character op = getArithmeticOperation(s[i]);</span>
+<span class="pc bpc" id="L178" title="1 of 2 branches missed.">                if(op!=null)</span>
+                {
+<span class="pc bpc" id="L180" title="1 of 2 branches missed.">                    if(st.size()&lt;2)return &quot;Wrong expression: should be operand operand {+,-,*,/} &quot;;</span>
+<span class="fc" id="L181">                    BigDecimal a=st.pop();</span>
+<span class="fc" id="L182">                    BigDecimal b=st.pop();</span>
+<span class="pc bpc" id="L183" title="3 of 4 branches missed.">                    if(a.equals(BigDecimal.ZERO)&amp;&amp;op=='/')return &quot;Error: Division by zero&quot;;</span>
+<span class="pc bpc" id="L184" title="1 of 5 branches missed.">                    switch (op)</span>
+                    {
+<span class="fc" id="L186">                        case '+':st.push(b.add(a));break;</span>
+<span class="fc" id="L187">                        case '-':st.push(b.subtract(a));break;</span>
+<span class="fc" id="L188">                        case '*':st.push(b.multiply(a));break;</span>
+<span class="fc" id="L189">                        case '/':st.push(b.divide(a,10, RoundingMode.UP));break;</span>
+                    }
+<span class="fc" id="L191">                }</span>
+                else
+                {
+<span class="nc" id="L194">                    return &quot;Wrong expression: should be  operand operand {+,-,*,/}&quot;;</span>
+                }
+            }
+        }
+<span class="pc bpc" id="L198" title="1 of 2 branches missed.">        if(st.size()!=1)return &quot;Wrong expression: should be  operand operand {+,-,*,/}&quot;;</span>
+<span class="fc" id="L199">        countActions++;</span>
+<span class="fc" id="L200">        BigDecimal res=st.pop();</span>
+<span class="fc" id="L201">        return res.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

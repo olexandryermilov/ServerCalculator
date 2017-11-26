@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="uk"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Main.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ServerCalculator</a> &gt; <a href="index.source.html" class="el_package">server</a> &gt; <span class="el_source">Main.java</span></div><h1>Main.java</h1><pre class="source lang-java linenums">package server;
+
+import java.io.*;
+import java.math.BigDecimal;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+
+import logger.Logger;
+
+<span class="nc" id="L11">public class Main {</span>
+
+    private static final int PORT_NUMBER=1034;
+    private static final String AUTHOR_INFORMATION=&quot;Author: Olexandr Yermilov Group: K-24 Variant: 9 - calculator&quot;;
+
+<span class="nc" id="L16">    private static Logger logger = new Logger();</span>
+    public static void main(String[] args) {
+        try{
+<span class="nc" id="L19">            ServerSocket serverSocket = new ServerSocket(PORT_NUMBER);</span>
+<span class="nc" id="L20">            logger.logMessage(&quot;Server started. Listens on port &quot;+PORT_NUMBER);</span>
+<span class="nc" id="L21">            Socket clientSocket =serverSocket.accept();</span>
+<span class="nc" id="L22">            PrintWriter out = new PrintWriter(clientSocket.getOutputStream(),true);</span>
+<span class="nc" id="L23">            BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));</span>
+<span class="nc" id="L24">            logger.logMessage(&quot;Client connected on &quot;+PORT_NUMBER+&quot;.&quot;);</span>
+<span class="nc" id="L25">            out.println(&quot;Successfully connected&quot;);</span>
+<span class="nc" id="L26">            Calculator calculator = new Calculator();</span>
+            String inputLine,outputLine;
+            String messageToLog;
+<span class="nc bnc" id="L29" title="All 2 branches missed.">            while((inputLine=in.readLine())!=null){</span>
+<span class="nc" id="L30">                logger.logMessage(&quot;Received message: &quot;+inputLine+&quot; from &quot;+clientSocket.toString());</span>
+<span class="nc bnc" id="L31" title="All 2 branches missed.">                if(inputLine.equalsIgnoreCase(&quot;exit&quot;)){</span>
+<span class="nc" id="L32">                    messageToLog=&quot;During connection &quot;+calculator.getCountActions()+&quot; times calculated result&quot;;</span>
+<span class="nc" id="L33">                    out.println(messageToLog);</span>
+<span class="nc" id="L34">                    logger.logMessage(messageToLog);</span>
+<span class="nc bnc" id="L35" title="All 2 branches missed.">                    if(calculator.getCountActions()!=0){</span>
+<span class="nc" id="L36">                        messageToLog=&quot;Min is &quot; + calculator.getMinNum()+ &quot;, max is &quot;+calculator.getMaxNum()+</span>
+                                &quot;, average is &quot;+
+                                calculator.
+<span class="nc" id="L39">                                        getSum().</span>
+<span class="nc" id="L40">                                            divide(new BigDecimal(2*calculator.getCountOperands()),10,BigDecimal.ROUND_UP);</span>
+<span class="nc" id="L41">                        out.println(messageToLog);</span>
+<span class="nc" id="L42">                        logger.logMessage(messageToLog);</span>
+                    }
+<span class="nc" id="L44">                    messageToLog=&quot;Disconnecting&quot;;</span>
+<span class="nc" id="L45">                    out.println(messageToLog);</span>
+<span class="nc" id="L46">                    logger.logMessage(messageToLog);</span>
+<span class="nc" id="L47">                    clientSocket.close();</span>
+<span class="nc" id="L48">                    break;</span>
+                }
+                else {
+<span class="nc bnc" id="L51" title="All 2 branches missed.">                    if (inputLine.equalsIgnoreCase(&quot;who&quot;)) {</span>
+<span class="nc" id="L52">                        out.println(AUTHOR_INFORMATION);</span>
+<span class="nc" id="L53">                        logger.logMessage(&quot;Sent message: &quot; + AUTHOR_INFORMATION);</span>
+                    } else {
+<span class="nc" id="L55">                        outputLine = calculator.calculate(inputLine);</span>
+<span class="nc" id="L56">                        out.println(outputLine);</span>
+<span class="nc" id="L57">                        logger.logMessage(&quot;Tried to calculate expression: &quot; + inputLine + &quot;, result is: &quot; + outputLine);</span>
+                    }
+                }
+            }
+
+        }
+<span class="nc" id="L63">        catch (IOException e) {</span>
+<span class="nc" id="L64">            logger.logMessage(e.getMessage());</span>
+        }
+
+        finally{
+<span class="nc" id="L68">            logger.logMessage(&quot;Shutting down server&quot;);</span>
+<span class="nc" id="L69">        }</span>
+<span class="nc" id="L70">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
